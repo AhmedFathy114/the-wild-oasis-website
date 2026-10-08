@@ -1,10 +1,8 @@
 import Link from "next/link";
-import { auth } from "../_lib/auth";
-import Image from "next/image";
+import GuestAreaLink from "./GuestAreaLink";
+import { Suspense } from "react";
 
 export default async function Navigation() {
-  const session = await auth();
-
   return (
     <nav className="z-10 text-xl">
       <ul className="flex gap-16 items-center">
@@ -25,29 +23,18 @@ export default async function Navigation() {
           </Link>
         </li>
         <li>
-          {session?.user?.image ? (
-            <Link
-              href="/account"
-              className="hover:text-accent-400 transition-colors flex items-center gap-4"
-            >
-              <div className="relative h-8 w-8">
-                <Image
-                  className="rounded-full object-cover"
-                  fill
-                  src={session.user.image}
-                  alt={session?.user?.image ?? "User Image"}
-                />
-              </div>
-              <span>Guest area</span>
-            </Link>
-          ) : (
-            <Link
-              href="/account"
-              className="hover:text-accent-400 transition-colors"
-            >
-              Guest area
-            </Link>
-          )}
+          <Suspense
+            fallback={
+              <Link
+                href="/account"
+                className="hover:text-accent-400 transition-colors"
+              >
+                Guest area
+              </Link>
+            }
+          >
+            <GuestAreaLink />
+          </Suspense>
         </li>
       </ul>
     </nav>
