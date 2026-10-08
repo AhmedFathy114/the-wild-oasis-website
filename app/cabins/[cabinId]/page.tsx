@@ -23,7 +23,7 @@ export async function generateStaticParams() {
 
 async function Page({ params }: Props) {
   const { cabinId } = await params;
-  const cabin = await getCabin(cabinId);
+  const cabin = await getCabin(Number(cabinId));
 
   const { name } = cabin;
 

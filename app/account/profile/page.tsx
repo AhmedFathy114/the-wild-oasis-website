@@ -3,6 +3,7 @@ import UpdateProfileForm from "@/app/_components/UpdateProfileForm";
 import { auth } from "@/app/_lib/auth";
 import { getGuest } from "@/app/_lib/data-service";
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
 
 interface Guest {
   id: number;
@@ -19,7 +20,10 @@ export const metadata: Metadata = {
 
 async function Page() {
   const session = await auth();
-  const guest: Guest = await getGuest(session?.user.email);
+  const email = session?.user?.email;
+
+  if (!email) redirect("/login");
+  const guest: Guest = await getGuest(email);
 
   return (
     <div>
