@@ -17,7 +17,7 @@ interface ReservationBookings {
   cabins: {
     name: string;
     image: string;
-  }[];
+  };
 }
 
 export const metadata: Metadata = {
@@ -27,9 +27,10 @@ export const metadata: Metadata = {
 export default async function Page() {
   const session = await auth();
   const bookings: ReservationBookings[] = await getBookings(
-    session?.user.guestId,
+    Number(session?.user.guestId),
   );
 
+  console.log(JSON.stringify(bookings[0], null, 2));
   return (
     <div>
       <h2 className="font-semibold text-2xl text-accent-400 mb-7">

@@ -2,11 +2,12 @@ import { eachDayOfInterval } from "date-fns";
 import { supabase } from "./supabase";
 import { notFound } from "next/navigation";
 import { cacheLife } from "next/cache";
+import { Booking } from "./types";
 
 /////////////
 // GET
 
-export async function getCabin(id) {
+export async function getCabin(id: number) {
   const { data, error } = await supabase
     .from("cabins")
     .select("*")
@@ -24,7 +25,7 @@ export async function getCabin(id) {
   return data;
 }
 
-export async function getCabinPrice(id) {
+export async function getCabinPrice(id: number) {
   const { data, error } = await supabase
     .from("cabins")
     .select("regularPrice, discount")
@@ -53,8 +54,8 @@ export const getCabins = async function () {
 };
 
 // Guests are uniquely identified by their email address
-export async function getGuest(email) {
-  const { data, error } = await supabase
+export async function getGuest(email: string) {
+  const { data } = await supabase
     .from("guests")
     .select("*")
     .eq("email", email)
@@ -64,8 +65,8 @@ export async function getGuest(email) {
   return data;
 }
 
-export async function getBooking(id) {
-  const { data, error, count } = await supabase
+export async function getBooking(id: number) {
+  const { data, error } = await supabase
     .from("bookings")
     .select("*")
     .eq("id", id)
@@ -79,8 +80,8 @@ export async function getBooking(id) {
   return data;
 }
 
-export async function getBookings(guestId) {
-  const { data, error, count } = await supabase
+export async function getBookings(guestId: number) {
+  const { data, error } = await supabase
     .from("bookings")
     // We actually also need data on the cabins as well. But let's ONLY take the data that we actually need, in order to reduce downloaded data.
     .select(
@@ -94,13 +95,13 @@ export async function getBookings(guestId) {
     throw new Error("Bookings could not get loaded");
   }
 
-  return data;
+  return data as unknown as Booking[];
 }
 
-export async function getBookedDatesByCabinId(cabinId) {
-  let today = new Date();
-  today.setUTCHours(0, 0, 0, 0);
-  today = today.toISOString();
+export async function getBookedDatesByCabinId(cabinId: number) {
+  const todayDate = new Date();
+  todayDate.setUTCHours(0, 0, 0, 0);
+  const today = todayDate.toISOString();
 
   // Getting all bookings
   const { data, error } = await supabase
@@ -159,7 +160,10 @@ export async function getCountries() {
 /////////////
 // CREATE
 
-export async function createGuest(newGuest) {
+export async function createGuest(newGuest: {
+  email: string;
+  fullName: string;
+}) {
   const { data, error } = await supabase.from("guests").insert([newGuest]);
 
   if (error) {

@@ -17,7 +17,7 @@ interface ReservationBookings {
   cabins: {
     name: string;
     image: string;
-  }[];
+  };
 }
 
 function ReservationList({ bookings }: { bookings: ReservationBookings[] }) {

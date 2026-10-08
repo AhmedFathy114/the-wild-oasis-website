@@ -20,9 +20,9 @@ export const {
     },
     async signIn({ user }) {
       try {
-        const existingGuest = await getGuest(user.email);
+        const existingGuest = await getGuest(user.email!);
         if (!existingGuest) {
-          await createGuest({ email: user.email, fullName: user.name });
+          await createGuest({ email: user.email!, fullName: user.name! });
         }
         return true;
       } catch {
